@@ -11,6 +11,7 @@ app.use(express.json());
 const bodyParser = require('express');
 app.use(bodyParser.urlencoded({ extended: true }));
 const { MongoClient } = require('mongodb');
+const { urlencoded } = require('express');
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nzkru.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -71,6 +72,17 @@ async function run() {
             const user = await userOrderCollection.find(query).toArray();
             res.json(user);
         });
+        // make admin from a user
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            console.log('put', user);
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        });
+
+
         // app.get('/products', async (req, res) => {
         //     const email = req.query.email;
         //     //const date = new Date(req.query.date).toLocaleDateString();
