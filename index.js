@@ -20,8 +20,16 @@ async function run() {
         console.log('database connected successfully');
         const database = client.db('kids_shop');
         const productsCollection = database.collection('products');
-        const userColection = database.collection('user_data');
+        const userOrderCollection = database.collection('user_Order');
+        const usersCollection = database.collection('users');
 
+        //save user information into database
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            //console.log(result);
+            res.json(result);
+        });
         // get all products
         app.get('/products', async (req, res) => {
             const cursor = productsCollection.find({});
@@ -38,11 +46,11 @@ async function run() {
             //console.log(product);
         });
         // post userOrder to the server by user for purchasing single product
-        app.post('/users', async (req, res) => {
+        app.post('/userOrder', async (req, res) => {
             const user = req.body;
             console.log('hit the post api', user);
-            const result = await userColection.insertOne(user);
-            console.log(result);
+            const result = await userOrderCollection.insertOne(user);
+            //console.log(result);
             res.send(result);
         });
 
