@@ -20,7 +20,7 @@ async function run() {
         console.log('database connected successfully');
         const database = client.db('kids_shop');
         const productsCollection = database.collection('products');
-
+        const userColection = database.collection('user_data');
 
         // get all products
         app.get('/products', async (req, res) => {
@@ -29,14 +29,21 @@ async function run() {
             //console.log(products);
             res.send(products);
         });
-
-        // get single products by Buy botton
+        // get single products by clicking Buy botton
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const product = await productsCollection.findOne(query);
             res.json(product);
             //console.log(product);
+        });
+        // post userOrder to the server by user for purchasing single product
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log('hit the post api', user);
+            const result = await userColection.insertOne(user);
+            console.log(result);
+            res.send(result);
         });
 
         // app.get('/products', async (req, res) => {
