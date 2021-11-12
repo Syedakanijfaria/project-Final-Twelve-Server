@@ -45,15 +45,32 @@ async function run() {
             res.json(product);
             //console.log(product);
         });
+        //post new products by admin
+        app.post('/products', async (req, res) => {
+            const user = req.body;
+            const product = await productsCollection.insertOne(user);
+            res.send(product);
+        })
         // post userOrder to the server by user for purchasing single product
         app.post('/userOrder', async (req, res) => {
             const user = req.body;
-            console.log('hit the post api', user);
+            //console.log('hit the post api', user);
             const result = await userOrderCollection.insertOne(user);
             //console.log(result);
             res.send(result);
         });
-
+        // get all person userOrder
+        app.get('/userOrder', async (req, res) => {
+            const cursor = userOrderCollection.find({});
+            const users = await cursor.toArray();
+            res.send(users);
+        });
+        // get single person UserOrder
+        app.get('/userOrder/:email', async (req, res) => {
+            const query = { email: req.params.email };
+            const user = await userOrderCollection.find(query).toArray();
+            res.json(user);
+        });
         // app.get('/products', async (req, res) => {
         //     const email = req.query.email;
         //     //const date = new Date(req.query.date).toLocaleDateString();
