@@ -49,14 +49,8 @@ async function run() {
         const productsCollection = database.collection('products');
         const userOrderCollection = database.collection('user_Order');
         const usersCollection = database.collection('users');
+        const reviewCollection = database.collection('review');
 
-        //save user information into database
-        app.post('/users', async (req, res) => {
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
-            //console.log(result);
-            res.json(result);
-        });
         // get all products
         app.get('/products', async (req, res) => {
             const cursor = productsCollection.find({});
@@ -78,6 +72,8 @@ async function run() {
             const product = await productsCollection.insertOne(user);
             res.send(product);
         })
+
+
         // post userOrder to the server by user for purchasing single product
         app.post('/userOrder', async (req, res) => {
             const user = req.body;
@@ -97,6 +93,22 @@ async function run() {
             const query = { email: req.params.email };
             const user = await userOrderCollection.find(query).toArray();
             res.json(user);
+        });
+        // delete single person userOrder
+        app.delete('/userOrder/:email', async (req, res) => {
+            const id = req.params.email;
+            const query = { _id: ObjectId(id) };
+            const result = await userOrderCollection.deleteOne(query);
+            res.json(result);
+        });
+
+
+        //save user information into database
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            //console.log(result);
+            res.json(result);
         });
         // make admin from a user
         app.put('/users/admin', verifyToken, async (req, res) => {
@@ -128,8 +140,17 @@ async function run() {
             }
             res.json({ admin: isAdmin });
         });
-
-
+        //post review from user
+        app.post("/review", async (req, res) => {
+            const result = await reviewCollection.insertOne(req.body);
+            res.send(result);
+        });
+        //get review from user
+        app.get("/review", async (req, res) => {
+            const cursor = reviewCollection.find({});
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
         // app.get('/products', async (req, res) => {
         //     const email = req.query.email;
         //     //const date = new Date(req.query.date).toLocaleDateString();
