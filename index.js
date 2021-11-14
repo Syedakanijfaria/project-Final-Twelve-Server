@@ -7,20 +7,19 @@ const admin = require("firebase-admin");
 const port = process.env.PORT || 5000;
 //mild-care-client-firebase-adminsdk.json
 
-
 const serviceAccount = require('./mild-care-client-firebase-adminsdk.json');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-
 app.use(cors());
 app.use(express.json());
+//var bodyParser = require('body-parser');
 const bodyParser = require('express');
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 const { MongoClient } = require('mongodb');
-const { urlencoded } = require('express');
+//const { urlencoded } = require('express');
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nzkru.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -117,9 +116,15 @@ async function run() {
         app.put('/userOrder/:id', async (res, req) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
-            const result = await userOrderCollection.updateOne(filter, { $set: { data: "Shipped", }, });
-            res.json(result);
-
+            userOrderCollection
+                .updateOne(filter, {
+                    $set: {
+                        status: "Shipped",
+                    },
+                })
+                .then((result) => {
+                    res.send(result);
+                });
         });
 
 
