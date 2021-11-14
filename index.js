@@ -113,6 +113,16 @@ async function run() {
         });
 
 
+        //update pending statuts of userOrder 
+        app.put('/userOrder/:id', async (res, req) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await userOrderCollection.updateOne(filter, { $set: { data: "Shipped", }, });
+            res.json(result);
+
+        });
+
+
         //save user information into database
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -161,6 +171,8 @@ async function run() {
             const reviews = await cursor.toArray();
             res.send(reviews);
         })
+
+
     }
     finally {
         // await client.close();
