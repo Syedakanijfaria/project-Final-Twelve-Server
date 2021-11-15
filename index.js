@@ -134,6 +134,8 @@ async function run() {
             //console.log(result);
             res.json(result);
         });
+
+
         // make admin from a user
         app.put('/users/admin', verifyToken, async (req, res) => {
             const user = req.body;
@@ -153,7 +155,7 @@ async function run() {
                 res.status(403).json({ message: 'you do not have access to make admin' })
             }
         });
-        //
+        //admin
         app.get('/users/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
