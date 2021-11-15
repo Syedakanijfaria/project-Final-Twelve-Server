@@ -5,7 +5,6 @@ const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const admin = require("firebase-admin");
 const port = process.env.PORT || 5000;
-//mild-care-client-firebase-adminsdk.json
 
 const serviceAccount = require('./mild-care-client-firebase-adminsdk.json');
 
@@ -17,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 //var bodyParser = require('body-parser');
 const bodyParser = require('express');
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 const { MongoClient } = require('mongodb');
 //const { urlencoded } = require('express');
 
