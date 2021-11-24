@@ -11,7 +11,7 @@ const serviceAccount = require('./mild-care-client-firebase-adminsdk.json');
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
-
+// middlleware
 app.use(cors());
 app.use(express.json());
 //var bodyParser = require('body-parser');
@@ -186,6 +186,7 @@ async function run() {
 }
 run().catch(console.dir);
 
+// First time server site connection check
 app.get('/', (req, res) => {
     res.send('Hello Baby shop!')
 })
